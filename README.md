@@ -2,6 +2,32 @@
 
 一个支持多模型切换、工具调用和技能系统的 Python AI Agent 框架。提供命令行交互界面，可自动拆解复杂任务并分步执行。
 
+**BuddyMe — 构建更聪明的智能体**
+
+支持 6 大 LLM 供应商运行时热切换。分层人格、三级技能加载、心跳记忆，为需要灵活性的开发者而生。
+
+支持多模型热切换 · 工具调用 · 技能系统 · 持久记忆 · 定时任务
+
+[Blog](http://49.235.53.176/) · [GitHub](https://github.com/virgo777/buddyme)
+
+</div>
+
+---
+
+## 项目简介
+
+buddyMe 是一个 Python 实现的多模型 AI 智能体框架。它能够将复杂任务自动拆解为子任务，逐一规划、执行、验证，并合并结果。内置 25+ 技能、8 个工具、完整的记忆系统和定时调度能力，可作为编程助手或通用任务代理使用。
+
+<div style="background-color: #f8f9fa; padding: 18px 22px; border-radius: 8px; margin: 28px 0; border-left: 4px solid #e67e22;">
+  <p style="margin: 0 0 14px 0; line-height: 1.6;">欢迎访问 <a href="http://49.235.53.176/" style="color: #2563eb; text-decoration: none;">BuddyMe Blog</a> 阅读最新文章与技术分享。</p>
+  <p style="color: #e67e22; font-size: 1.1em; font-weight: bold; margin: 0 0 12px 0;">📚 更新推荐阅读</p>
+  <ul style="margin: 0; padding-left: 22px; line-height: 1.9;">
+    <li><a href="http://49.235.53.176/blog/heartbeat-and-loop-skill-engine-deep-dive" style="color: #2563eb; text-decoration: none;">buddyMe 心跳系统与 Loop 引擎：让 AI 自己干活，还不花钱</a></li>
+    <li><a href="http://49.235.53.176/blog/buddyme" style="color: #2563eb; text-decoration: none;">技术深度：buddyMe 框架任务拆解的 "盲拆" 问题与技能感知优化方案</a></li>
+    <li><a href="http://49.235.53.176/blog/react-plan-and-execute-reflection" style="color: #2563eb; text-decoration: none;">ReAct、Plan-and-Execute 与 Reflection 的本质差异与落地指南</a></li>
+  </ul>
+</div>
+
 ## 核心特性
 
 - **多模型支持** — 统一接口调用智谱 GLM、DeepSeek、百度千帆 ERNIE、小米 MiMo、阿里 Qwen 等国产大模型
