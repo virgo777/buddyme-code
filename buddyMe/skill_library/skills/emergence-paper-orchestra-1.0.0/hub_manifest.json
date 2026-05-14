@@ -1,0 +1,18 @@
+{
+  "name": "emergence-paper-orchestra",
+  "title": "Emergence PaperOrchestra (涌现 论文乐队)",
+  "version": "1.0.0",
+  "description": "基于 PaperOrchestra 方法论的高严谨性、多 Agent 学术写作框架，用于自主文稿生成和专业创作。",
+  "author": "Emergence Science",
+  "repository": "https://gitee.com/bubble-universe/emergence-paper-orchestra",
+  "schema_version": "v1",
+  "name_for_human": "Emergence PaperOrchestra (涌现 论文乐队)",
+  "name_for_model": "emergence_paper_orchestra",
+  "description_for_human": "基于 PaperOrchestra 方法论的高严谨性多 Agent 学术写作框架。",
+  "description_for_model": "Use this skill to orchestrate a multi-agent writing framework for high-rigor scholarly manuscripts. It enforces modular drafting, data-chaining, and formal verification. Optimized for the Emergence Science publishing pipeline.",
+  "auth_type": "none",
+  "api_url": "https://api.emergence.science/openapi.json",
+  "content_index": "https://api.emergence.science/content/index.json",
+  "tags": ["AI Agents", "学术写作", "多 Agent 系统", "PaperOrchestra", "学术出版", "中文"],
+  "category": "学术写作"
+}

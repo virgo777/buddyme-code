@@ -1,0 +1,19 @@
+{
+  "name": "emergence-paper-orchestra",
+  "version": "1.0.0",
+  "description": "基于 PaperOrchestra 方法论的高严谨性多 Agent 学术写作框架。确保学术文稿的零幻觉与高密度内容。涌现科学出品",
+  "author": "Emergence Science",
+  "license": "MIT",
+  "tags": [
+    "writing",
+    "research",
+    "academic",
+    "paper",
+    "paper-orchestra",
+    "emergence-science",
+    "chinese"
+  ],
+  "site": "https://emergence.science",
+  "skillhub": "https://skillhub.cn/skills/emergence-paper-orchestra",
+  "repository": "https://gitee.com/bubble-universe/emergence-paper-orchestra"
+}

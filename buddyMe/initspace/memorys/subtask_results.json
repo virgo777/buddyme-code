@@ -1,0 +1,47 @@
+{
+  "_meta": {
+    "version": 1,
+    "created_at": "2026-05-14T22:58:06.584581",
+    "updated_at": "2026-05-14T22:58:06.584621",
+    "total_steps": 5,
+    "completed_count": 0,
+    "checkpoints": [
+      2,
+      3
+    ],
+    "changes": []
+  },
+  "[SEARCH][SKILL:weather-skill] 查询北京5月17日的实时天气预报数据": {
+    "status": "pending",
+    "tags": [
+      "start_task"
+    ],
+    "result": ""
+  },
+  "[SEARCH] 搜索北京近期热门博物馆及其当前展览信息、开放时间和预约政策": {
+    "status": "pending",
+    "tags": [],
+    "result": ""
+  },
+  "[CREATE][SKILL:frontend-design] 创建博物馆导览 HTML 文件骨架，包含天气展示区、博物馆列表区和导览建议区": {
+    "status": "pending",
+    "tags": [
+      "checkpoint"
+    ],
+    "result": ""
+  },
+  "[EDIT] 将查询到的天气数据、穿衣建议及博物馆详细展览信息填充至 HTML 文件中": {
+    "status": "pending",
+    "tags": [
+      "checkpoint"
+    ],
+    "result": ""
+  },
+  "[VERIFY] 读取最终生成的 HTML 文件，检查数据准确性、页面完整性及跨端响应式布局": {
+    "status": "pending",
+    "tags": [
+      "end_task"
+    ],
+    "result": ""
+  }
+}
