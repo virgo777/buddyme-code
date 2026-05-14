@@ -19,6 +19,7 @@ buddyMe 是一个 Python 实现的多模型 AI 智能体框架。它能够将复
   <p style="margin: 0 0 14px 0; line-height: 1.6;">欢迎访问 <a href="http://49.235.53.176/" style="color: #2563eb; text-decoration: none;">BuddyMe Blog</a> 阅读最新文章与技术分享。</p>
   <p style="color: #e67e22; font-size: 1.1em; font-weight: bold; margin: 0 0 12px 0;">📚 更新推荐阅读</p>
   <ul style="margin: 0; padding-left: 22px; line-height: 1.9;">
+    <li><a href="http://49.235.53.176/blog/sub-agent-prompt-architecture-deep-dive" style="color: #2563eb; text-decoration: none;">深度解析：子任务 Prompt 的构建机制——从源码到执行</a></li>
     <li><a href="http://49.235.53.176/blog/heartbeat-and-loop-skill-engine-deep-dive" style="color: #2563eb; text-decoration: none;">buddyMe 心跳系统与 Loop 引擎：让 AI 自己干活，还不花钱</a></li>
     <li><a href="http://49.235.53.176/blog/buddyme" style="color: #2563eb; text-decoration: none;">技术深度：buddyMe 框架任务拆解的 "盲拆" 问题与技能感知优化方案</a></li>
     <li><a href="http://49.235.53.176/blog/react-plan-and-execute-reflection" style="color: #2563eb; text-decoration: none;">ReAct、Plan-and-Execute 与 Reflection 的本质差异与落地指南</a></li>
