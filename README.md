@@ -8,8 +8,7 @@
 
 支持多模型热切换 · 工具调用 · 技能系统 · 持久记忆 · 定时任务
 
-[Blog](http://49.235.53.176/) · [GitHub](https://github.com/virgo777/buddyme)
-
+[Blog](http://49.235.53.176/) 
 </div>
 
 ---
