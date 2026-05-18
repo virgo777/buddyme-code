@@ -15,7 +15,6 @@ import logging
 import os
 import re
 from datetime import datetime
-from pathlib import Path
 
 from buddyMe.agent_moudle import todo_manager
 
@@ -65,7 +64,9 @@ class TaskRunner:
 
         enriched = user_input
         if conversation_context:
-            enriched = f"{conversation_context}\n\n{'=' * 40}\n\n当前用户需求:\n{user_input}"
+            enriched = (
+                f"{conversation_context}\n\n{'=' * 40}\n\n当前用户需求:\n{user_input}"
+            )
         plans, checkpoints = await todo_manager.plan_task(
             enriched, client=self._client,
             skill_metadata=self._skill_loader.get_metadata_prompt(),
@@ -166,7 +167,10 @@ class TaskRunner:
 
             # ---------- 当前步骤：执行 ----------
             emoji = {"build": "🔨", "verify": "✅", "research": "🔍"}.get(task_type, "📌")
-            print(f"\n{emoji} Step {i+1}/{total} [{task_type}] {task_text[:70]}{'...' if len(task_text) > 70 else ''}")
+            print(
+                f"\n{emoji} Step {i+1}/{total} [{task_type}] "
+                f"{task_text[:70]}{'...' if len(task_text) > 70 else ''}"
+            )
 
             system_content = p.build_subtask_system(
                 task_text, i, total, is_end_task, task_type,
@@ -215,7 +219,9 @@ class TaskRunner:
 
     def _build_conversation_context(self) -> str:
         parts = []
-        summary_path = os.path.join(self._project_root, "initspace", "memorys", "memory_summary.md")
+        summary_path = os.path.join(
+            self._project_root, "initspace", "memorys", "memory_summary.md"
+        )
         if os.path.exists(summary_path):
             try:
                 with open(summary_path, "r", encoding="utf-8") as f:

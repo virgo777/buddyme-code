@@ -11,23 +11,22 @@ agent.py — 多模型智能体（状态管理 + 生命周期）
 任务执行管线已提取到 task_runner.py。
 """
 
-import os
-import json
-import time
-import shutil
 import asyncio
+import json
 import logging
+import os
+import shutil
+import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from buddyMe.llm_moudle import basic_llm
-from buddyMe.initspace.skill_loader import SkillLoader
-from buddyMe.utils.paths import get_package_dir, get_user_data_dir, get_workspace_dir, resolve_data_dir
-from buddyMe.llm_moudle import model_config
 from buddyMe.agent_moudle.task_runner import TaskRunner
+from buddyMe.initspace.skill_loader import SkillLoader
+from buddyMe.llm_moudle import basic_llm, model_config
+from buddyMe.session.conversation_logger import ConversationLogger
 from buddyMe.session.message_history import MessageHistory
 from buddyMe.session.subtasks_manager import SubtasksManager
-from buddyMe.session.conversation_logger import ConversationLogger
+from buddyMe.utils.paths import get_package_dir, get_user_data_dir, get_workspace_dir, resolve_data_dir
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -101,14 +100,18 @@ class AgentMain:
         self._executor.register(invoke_skill)
 
         # 对话持久化（必须先于 _memory，因为 MemoryManager 依赖它）
-        self.conv_logger = ConversationLogger(os.path.join(self._PROJECT_ROOT, "initspace", "memorys", "conversation_log.json"))
+        self.conv_logger = ConversationLogger(
+            os.path.join(self._PROJECT_ROOT, "initspace", "memorys", "conversation_log.json")
+        )
 
         # 用户记忆（必须先于 _rebuild_system_prompt，因为 system prompt 注入记忆文本）
-        from buddyMe.memory.store import MemoryStore
         from buddyMe.memory.manager import MemoryManager
+        from buddyMe.memory.store import MemoryStore
         _brain_path = os.path.join(self._PROJECT_ROOT, "initspace", "brain", "USER.md")
         _conv_log_path = os.path.join(self._PROJECT_ROOT, "initspace", "memorys", "conversation_log.json")
-        self._memory_store = MemoryStore(_brain_path, conversation_log_path=_conv_log_path, client=self._sub_client)
+        self._memory_store = MemoryStore(
+            _brain_path, conversation_log_path=_conv_log_path, client=self._sub_client
+        )
         self._memory = MemoryManager(store=self._memory_store, conv_logger=self.conv_logger)
 
         # System Prompt（依赖 _executor + _skill_loader + _memory）
@@ -129,8 +132,8 @@ class AgentMain:
         self._compressor = ContextCompressor(keep_first=2, keep_last=5)
 
         # 任务执行引擎（依赖注入，消除 self._a 反向通道）
-        from buddyMe.session.state import SessionState
         from buddyMe.agent_moudle.task_pipeline import TaskPipeline
+        from buddyMe.session.state import SessionState
         self._state = SessionState()
         _args = model_config.ModelConfig.get_args()
 
@@ -198,7 +201,10 @@ class AgentMain:
 
     def _register_tools(self):
         try:
-            from buddyMe.tool_moudle.bash_tool import (BashTool, ReadFileTool, WriteFileTool, EditFileTool, GrepTool, GlobTool)
+            from buddyMe.tool_moudle.bash_tool import (
+                BashTool, EditFileTool, GlobTool, GrepTool,
+                ReadFileTool, WriteFileTool,
+            )
             for tool in [BashTool(), ReadFileTool(), WriteFileTool(), EditFileTool(), GrepTool(), GlobTool()]:
                 tool.set_model_name(self.model_name)
                 self._executor.register(tool)
@@ -339,7 +345,10 @@ class AgentMain:
             result += f"\n\n{'=' * 40}\n项目已生成到:\n{file_list}"
 
         if self._state.used_skills:
-            logger.info("[Skill] 本次任务共使用 %d 个技能: %s", len(self._state.used_skills), ", ".join(self._state.used_skills))
+            logger.info(
+                "[Skill] 本次任务共使用 %d 个技能: %s",
+                len(self._state.used_skills), ", ".join(self._state.used_skills),
+            )
 
         self.conv_logger.log(
             query=user_input, response=result, model=self.model_name,

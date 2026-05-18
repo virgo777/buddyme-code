@@ -164,12 +164,18 @@ class TaskPipeline:
                 result_text = await self._executor.execute(name, inp)
                 if not result_text:
                     result_text = "[工具无输出]"
-                messages.append({"role": "tool", "tool_call_id": tc["id"], "name": name, "content": result_text})
+                messages.append({
+                    "role": "tool", "tool_call_id": tc["id"], "name": name, "content": result_text,
+                })
                 limit = min(self._agent_max_token // 4, 8000)
                 if len(result_text) <= limit:
                     full_text = result_text
                 else:
-                    full_text = result_text[:limit * 2 // 3] + "\n...(中间已省略)...\n" + result_text[-(limit // 3):]
+                    full_text = (
+                        result_text[:limit * 2 // 3]
+                        + "\n...(中间已省略)...\n"
+                        + result_text[-(limit // 3):]
+                    )
         return full_text or "[任务完成]"
 
     # ==================================================================
@@ -204,7 +210,10 @@ class TaskPipeline:
 
             blocks = resp.get("content", [])
             tool_calls = [b for b in blocks if b.get("type") == "tool_use"]
-            self._state.used_tools.extend([{"tool_name": tc["name"], "args": tc.get("input", {})} for tc in tool_calls])
+            self._state.used_tools.extend([
+                {"tool_name": tc["name"], "args": tc.get("input", {})}
+                for tc in tool_calls
+            ])
             texts = [b.get("text", "") for b in blocks if b.get("type") == "text"]
             step_text = "\n".join(texts)
             if step_text:
@@ -250,36 +259,59 @@ class TaskPipeline:
                 if name == "invoke_skill":
                     self._state.used_skills.append(inp.get("skill_name", "未知"))
                 collected.append(f"[{name}] {result_content}")
-                task_messages.append({"role": "tool", "tool_call_id": tc["id"], "name": name, "content": result_content})
+                task_messages.append({
+                    "role": "tool", "tool_call_id": tc["id"], "name": name, "content": result_content,
+                })
 
             if len(task_messages) > self._max_messages_length:
                 if self._compressor:
                     try:
-                        compressed_ctx = await self._compressor.compress(task_messages, self._sub_client)
+                        compressed_ctx = await self._compressor.compress(
+                            task_messages, self._sub_client
+                        )
                         task_messages = self._compressor.get_compressed_messages(compressed_ctx)
                     except Exception:
-                        summary = self._compress_tool_results(task_messages, self._max_tools_compress_len)
+                        summary = self._compress_tool_results(
+                            task_messages, self._max_tools_compress_len
+                        )
                         task_messages = [
                             task_messages[0],
-                            {"role": "user", "content": f"【当前子任务目标】{task_text}\n\n以下是已获取的信息:\n\n{summary}\n\n请直接基于以上信息完成当前子任务。"},
+                            {"role": "user", "content": (
+                                f"【当前子任务目标】{task_text}\n\n"
+                                f"以下是已获取的信息:\n\n{summary}\n\n"
+                                f"请直接基于以上信息完成当前子任务。"
+                            )},
                         ]
                 else:
-                    summary = self._compress_tool_results(task_messages, self._max_tools_compress_len)
+                    summary = self._compress_tool_results(
+                        task_messages, self._max_tools_compress_len
+                    )
                     task_messages = [
                         task_messages[0],
-                        {"role": "user", "content": f"【当前子任务目标】{task_text}\n\n以下是已获取的信息:\n\n{summary}\n\n请直接基于以上信息完成当前子任务。"},
+                        {"role": "user", "content": (
+                            f"【当前子任务目标】{task_text}\n\n"
+                            f"以下是已获取的信息:\n\n{summary}\n\n"
+                            f"请直接基于以上信息完成当前子任务。"
+                        )},
                     ]
 
             if search_count >= self._max_search_calls:
                 summary = self._compress_tool_results(task_messages, self._max_tools_compress_len)
                 task_messages = [
                     {"role": "system", "content": f"你是助手，当前子任务: {task_text}"},
-                    {"role": "user", "content": f"【当前子任务目标】{task_text}\n\n以下是已获取的信息:\n\n{summary}\n\n请直接基于以上信息给出最终结果。"},
+                    {"role": "user", "content": (
+                        f"【当前子任务目标】{task_text}\n\n"
+                        f"以下是已获取的信息:\n\n{summary}\n\n"
+                        f"请直接基于以上信息给出最终结果。"
+                    )},
                 ]
                 try:
                     resp = await self._client.chat(messages=task_messages)
                     self._track_usage(resp)
-                    final = "\n".join(b.get("text", "") for b in resp.get("content", []) if b.get("type") == "text")
+                    final = "\n".join(
+                        b.get("text", "") for b in resp.get("content", [])
+                        if b.get("type") == "text"
+                    )
                     return (full_text + "\n" + final).strip() if full_text else final.strip()
                 except Exception as e:
                     logger.error("[子任务] 强制总结失败: %s", e)
@@ -295,8 +327,10 @@ class TaskPipeline:
     # Subtask Prompt 构建
     # ==================================================================
 
-    def build_subtask_system(self, task_text: str, idx: int, total: int, is_end_task: bool, task_type: str,
-                             written_files: list, subtask_mgr) -> str:
+    def build_subtask_system(
+        self, task_text: str, idx: int, total: int, is_end_task: bool, task_type: str,
+        written_files: list, subtask_mgr,
+    ) -> str:
         sub_rules = self._load_sub_agent_prompt()
         skill_meta = self._skill_loader.get_metadata_prompt()
         readonly = (
@@ -360,9 +394,11 @@ class TaskPipeline:
             + readonly + "\n\n" + sub_rules
         )
 
-    def build_subtask_user(self, user_input: str, task_text: str, idx: int, total: int,
-                           is_end_task: bool, task_type: str, conversation_context: str,
-                           written_files: list, subtask_mgr) -> str:
+    def build_subtask_user(
+        self, user_input: str, task_text: str, idx: int, total: int,
+        is_end_task: bool, task_type: str, conversation_context: str,
+        written_files: list, subtask_mgr,
+    ) -> str:
         cp = f"{conversation_context}\n\n{'=' * 40}\n\n" if conversation_context else ""
         if is_end_task and idx > 0:
             files = "\n".join(f"  - {f}" for f in written_files) or "  (暂无)"
@@ -371,7 +407,11 @@ class TaskPipeline:
             prev = subtask_mgr.read_completed()
             ps = ""
             if prev and prev != "暂无已完成的结果":
-                ps = f"\n\n{'=' * 40}\n前置子任务已完成的结果:\n\n{prev[:self._max_tools_compress_len]}\n\n{'=' * 40}\n请基于以上已有信息完成任务。"
+                ps = (
+                    f"\n\n{'=' * 40}\n前置子任务已完成的结果:\n\n"
+                    f"{prev[:self._max_tools_compress_len]}\n\n{'=' * 40}\n"
+                    f"请基于以上已有信息完成任务。"
+                )
             return f"{cp}请完成以下任务: {task_text}\n\n背景信息: {user_input}{ps}"
         if not is_end_task and idx > 0:
             prev = subtask_mgr.read_completed()
@@ -401,7 +441,10 @@ class TaskPipeline:
         if is_end_task and total > 1:
             allowed = {"read_file", "edit_file", "write_file", "invoke_skill"}
         elif task_type == "build":
-            allowed = {"read_file", "write_file", "edit_file", "grep", "glob", "baidu_search", "invoke_skill"}
+            allowed = {
+                "read_file", "write_file", "edit_file", "grep", "glob",
+                "baidu_search", "invoke_skill",
+            }
         else:
             return all_schemas
         return [s for s in all_schemas if s.get("function", {}).get("name") in allowed]
@@ -422,13 +465,19 @@ class TaskPipeline:
             "content": None,
             "tool_calls": [{
                 "id": tc["id"], "type": "function",
-                "function": {"name": tc["name"], "arguments": json.dumps(tc.get("input", {}), ensure_ascii=False)},
+                "function": {
+                    "name": tc["name"],
+                    "arguments": json.dumps(tc.get("input", {}), ensure_ascii=False),
+                },
             } for tc in tool_calls],
         }
 
     @staticmethod
     def _compress_tool_results(messages: list, max_chars: int) -> str:
-        items = [(m.get("name", "unknown"), m.get("content", "")) for m in messages if m.get("role") == "tool"]
+        items = [
+            (m.get("name", "unknown"), m.get("content", ""))
+            for m in messages if m.get("role") == "tool"
+        ]
         if not items:
             return "暂无"
         if max_chars < 100:
@@ -444,7 +493,11 @@ class TaskPipeline:
             elif len(content) <= avail:
                 formatted.append(label + content)
             else:
-                formatted.append(label + content[:avail * 2 // 3] + "\n...(中间已省略)...\n" + content[-(avail // 3):])
+                formatted.append(
+                    label + content[:avail * 2 // 3]
+                    + "\n...(中间已省略)...\n"
+                    + content[-(avail // 3):]
+                )
         combined = "\n\n".join(formatted)
         if len(combined) <= max_chars:
             return combined
