@@ -27,7 +27,7 @@ buddyMe 是一个 Python 实现的多模型 AI 智能体框架。它能够将复
 
   📚 复杂任务的内评估与反馈</p>
   <ul style="margin: 0; padding-left: 22px; line-height: 1.9;">
-    <li><a href="http://49.235.53.176/blog/eval-system-from-zero-to-production" style="color: #2563eb; text-decoration: none;">给 AI Agent 装上"裁判眼"：buddyMe Eval 系统从零到落地的完整实录</a></li>
+    <li><a href="http://49.235.53.176/blog/eval-system-from-zero-to-production" style="color: #2563eb; text-decoration: none;">给 AI Agent 装上"裁判眼"1：buddyMe Eval 系统从零到落地的完整实录</a></li>
 
   </ul>
 
