@@ -51,6 +51,10 @@ buddyMe 是一个 Python 实现的多模型 AI 智能体框架。它能够将复
 ```bash
 pip install -e .
 ```
+或者直接安装
+```bash
+pip install buddyme
+```
 
 ### 运行
 
